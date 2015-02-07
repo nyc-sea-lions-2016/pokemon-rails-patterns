@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get '/pokemon/:type' => "pokemon#index", as: :pokemon_type
+
   resources :pokemon, only: [:index] do
   end
 

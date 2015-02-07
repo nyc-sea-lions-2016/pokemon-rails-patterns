@@ -1,40 +1,19 @@
 class PokemonController < ApplicationController
+  before_action :set_type, only: [:index, :catch]
 
   def index
     #Searching
-    @captured_pokemon = Pokemon.where(caught: true).order(:type)
-    @free_pokemon = Pokemon.where(caught: false).order(:type)
-
-    if params[:type]
-      @captured_pokemon = @captured_pokemon.where(type: params[:type])
-      @free_pokemon = @free_pokemon.where(type: params[:type])
-    end
-
-    @captured_pokemon = @captured_pokemon.order(:type, :id)
-    @free_pokemon = @free_pokemon.order(:type, :id)
-
-    @types = %w(
-    bug dark dragon electric fairy fighting fire flying
-    ghost grass ground ice normal poison psychic rock
-    shadow steel unknown water
-    )
+    @captured_pokemon = Pokemon.captured.by_type(params[:type]).ordered
+    @free_pokemon = Pokemon.free.by_type(params[:type]).ordered
   end
 
   def catch
-    @types = %w(
-    bug dark dragon electric fairy fighting fire flying
-    ghost grass ground ice normal poison psychic rock
-    shadow steel unknown water
-    )
     #Validations: Allowed to catch pokemon that follow the following rules:
     # you don't already have it
     # you don't already have 2 pokemon of that type
-    found_pokemon = Pokemon.where(id: params[:id]).first
-    caught_count = Pokemon.where(type: found_pokemon.type, caught: true).count
+    found_pokemon = Pokemon.find(params[:id])
 
-    if caught_count < 2 && @types.include?( found_pokemon.type )
-      found_pokemon.caught = true
-      found_pokemon.save
+    if found_pokemon.catch
       NotificationService.tell_friends "I caught #{found_pokemon.name.upcase}!"
     else
       flash[:notice] = "damn Damn DAMN! #{found_pokemon.name.upcase} got away!"
@@ -45,7 +24,7 @@ class PokemonController < ApplicationController
   end
 
   def release
-    found_pokemon = Pokemon.where(id: params[:id]).first
+    found_pokemon = Pokemon.find(params[:id])
     found_pokemon.caught = false
     found_pokemon.save
 
@@ -58,11 +37,15 @@ class PokemonController < ApplicationController
 
   private
 
+  def set_type
+    @types = Pokemon::TYPES
+  end
+
   def redirect_with_type
     if params[:type].present?
-      redirect_to "/?type=#{params[:type]}"
+      redirect_to pokemon_type_path(params[:type])
     else
-      redirect_to '/'
+      redirect_to pokemon_index_path
     end
   end
 end

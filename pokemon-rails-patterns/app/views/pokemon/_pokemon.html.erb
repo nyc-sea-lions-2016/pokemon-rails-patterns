@@ -1,0 +1,13 @@
+<div class='pokemon-container'>
+  <h3> <%= link_to pokemon.name, pokemon.url, target: 'blank' %> </h3>
+
+  <%= pokemon_image_tag(pokemon) %>
+
+  <p class=<%= pokemon_class(pokemon) %>> <%=pokemon.type%> </p>
+
+  <%= form_tag(pokemon_action_path(pokemon), method: :post) do %>
+    <%= hidden_field_tag  :type, params[:type] %>
+    <%= submit_tag pokemon_action_text(pokemon) %>
+  <% end %>
+</div>
+
