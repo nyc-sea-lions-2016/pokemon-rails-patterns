@@ -13,19 +13,11 @@ class PokemonController < ApplicationController
     @captured_pokemon = @captured_pokemon.order(:type, :id)
     @free_pokemon = @free_pokemon.order(:type, :id)
 
-    @types = %w(
-    bug dark dragon electric fairy fighting fire flying
-    ghost grass ground ice normal poison psychic rock
-    shadow steel unknown water
-    )
+    @types = Pokemon::TYPES
   end
 
   def catch
-    @types = %w(
-    bug dark dragon electric fairy fighting fire flying
-    ghost grass ground ice normal poison psychic rock
-    shadow steel unknown water
-    )
+    @types = Pokemon::TYPES
     #Validations: Allowed to catch pokemon that follow the following rules:
     # you don't already have it
     # you don't already have 2 pokemon of that type
