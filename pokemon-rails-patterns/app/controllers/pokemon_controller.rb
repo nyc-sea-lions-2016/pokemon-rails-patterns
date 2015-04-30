@@ -2,17 +2,8 @@ class PokemonController < ApplicationController
 
   def index
     #Searching
-    @captured_pokemon = Pokemon.where(caught: true).order(:type)
-    @free_pokemon = Pokemon.where(caught: false).order(:type)
-
-    if params[:type]
-      @captured_pokemon = @captured_pokemon.where(type: params[:type])
-      @free_pokemon = @free_pokemon.where(type: params[:type])
-    end
-
-    @captured_pokemon = @captured_pokemon.order(:type, :id)
-    @free_pokemon = @free_pokemon.order(:type, :id)
-
+    @captured_pokemon = Pokemon.caught.by_type(params[:type]).order(:type, :id)
+    @free_pokemon = Pokemon.free.by_type(params[:type]).order(:type, :id)
     @types = Pokemon::TYPES
   end
 
