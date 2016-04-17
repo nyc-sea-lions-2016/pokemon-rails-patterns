@@ -7,9 +7,9 @@ FactoryGirl.define do
   factory :pokemon do
     name { p_names.sample }
     type { p_types.sample }
-    hp { p_names.sample }
-    attack { p_names.sample }
-    defense { p_names.sample }
+    hp { p_hp.sample }
+    attack { p_attack.sample }
+    defense { p_defense.sample }
     caught { [false, true].sample }
   end
 end
